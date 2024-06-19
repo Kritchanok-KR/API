@@ -91,16 +91,16 @@ async function importDataToDB(jsonData) {
                                     insertRequest.addParameter('lastNameAlt', TYPES.VarChar, data["lastNameAlt"]);
                                     insertRequest.addParameter('employeeNameAlt', TYPES.VarChar, data["employeeNameAlt"]);
                                     insertRequest.addParameter('nickName', TYPES.VarChar, data["nickName"]);
-                                    insertRequest.addParameter('joinDate', TYPES.DateTime, data["joinDate"] ? new Date(data["joinDate"]) : null);
-                                    insertRequest.addParameter('serviceDate', TYPES.DateTime, data["serviceDate"] ? new Date(data["serviceDate"]) : null);
-                                    insertRequest.addParameter('endProbationDate', TYPES.DateTime, data["endProbationDate"] ? new Date(data["endProbationDate"]) : null);
+                                    insertRequest.addParameter('joinDate', TYPES.DateTime, data["joinDate"] ? new Date(Number(data["joinDate"])) : null);
+                                    insertRequest.addParameter('serviceDate', TYPES.DateTime, data["serviceDate"] ? new Date(Number(data["serviceDate"])) : null);
+                                    insertRequest.addParameter('endProbationDate', TYPES.DateTime, data["endProbationDate"] ? new Date(Number(data["endProbationDate"])) : null);
                                     insertRequest.addParameter('endDate', TYPES.DateTime, data["endDate"] ? new Date(data["endDate"]) : null);
                                     insertRequest.addParameter('quitReason', TYPES.VarChar, data["quitReason"]);
                                     insertRequest.addParameter('companyCode', TYPES.VarChar, data["companyCode"]);
                                     insertRequest.addParameter('company', TYPES.VarChar, data["company"]);
                                     insertRequest.addParameter('establishmentCode', TYPES.VarChar, data["establishmentCode"]);
                                     insertRequest.addParameter('establishment', TYPES.VarChar, data["establishment"]);
-                                    insertRequest.addParameter('positionDate', TYPES.DateTime, data["positionDate"] ? new Date(data["positionDate"]) : null);
+                                    insertRequest.addParameter('positionDate', TYPES.DateTime, data["positionDate"] ? new Date(Number(data["positionDate"])) : null);
                                     insertRequest.addParameter('jobroleCode', TYPES.VarChar, data["jobroleCode"]);
                                     insertRequest.addParameter('jobrole', TYPES.VarChar, data["jobrole"]);
                                     insertRequest.addParameter('positionCode', TYPES.VarChar, data["positionCode"]);
@@ -119,13 +119,13 @@ async function importDataToDB(jsonData) {
                                     insertRequest.addParameter('workEmails', TYPES.VarChar, data["workEmails"]);
                                     insertRequest.addParameter('workPhones', TYPES.VarChar, data["workPhones"]);
                                     insertRequest.addParameter('workAddresses', TYPES.VarChar, data["workAddresses"]);
-                                    insertRequest.addParameter('birthDate', TYPES.DateTime, data["birthDate"] ? new Date(data["birthDate"]) : null);
+                                    insertRequest.addParameter('birthDate', TYPES.DateTime, data["birthDate"] ? new Date(Number(data["birthDate"])) : null);
                                     insertRequest.addParameter('homeEmails', TYPES.VarChar, data["homeEmails"]);
                                     insertRequest.addParameter('homePhones', TYPES.VarChar, data["homePhones"]);
                                     insertRequest.addParameter('mobilePhones', TYPES.VarChar, data["mobilePhones"]);
                                     insertRequest.addParameter('homeAddresses', TYPES.VarChar, data["homeAddresses"]);
                                     insertRequest.addParameter('nationID', TYPES.VarChar, data["nationID"]);
-                                    insertRequest.addParameter('expiredate', TYPES.DateTime, data["expiredate"] ? new Date(data["expiredate"]) : null);
+                                    insertRequest.addParameter('expiredate', TYPES.DateTime, data["expiredate"] ? new Date(Number(data["expiredate"])) : null);
 
                                     connection.execSql(insertRequest);
                                 }
