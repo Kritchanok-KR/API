@@ -1,13 +1,15 @@
+//All Libary Section 
 import express from "express";
 import http from "http";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { Connection, Request, TYPES } from 'tedious';
-import fetch from 'node-fetch';  // Import fetch library
+import fetch from 'node-fetch';  
 import { promisify } from 'util';
 
+//Express Set up
 const app = express();
-
+//Config SQL setup
 const config = {
     authentication: {
         options: {
@@ -25,15 +27,16 @@ const config = {
 };
 
 const server = http.createServer(app);
+//Middleware setup
 app.use(express.json({ limit: "10mb" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-
+//Verify that Api running
 app.get("/", (req, res) => {
     res.send("API IS RUNNING");
 });
-
+//Tell that can connect to DB
 async function importDataToDB(jsonData) {
     return new Promise((resolve, reject) => {
         const connection = new Connection(config);
@@ -60,7 +63,7 @@ async function importDataToDB(jsonData) {
                                 }
 
                                 if (rowCount > 0) {
-                                    console.log('ข้อมูลซ้ำ ถ้าเจอข้อมูลซ้ำ if ส่วนนี้ก็เอาไว้เขียน update ข้อมูลแทนก็ได้');
+                                    console.log('Not written repeat data');
                                     resolve();
                                 } else {
                                     const insertRequest = new Request(`
@@ -88,9 +91,9 @@ async function importDataToDB(jsonData) {
                                     insertRequest.addParameter('lastNameAlt', TYPES.VarChar, data["lastNameAlt"]);
                                     insertRequest.addParameter('employeeNameAlt', TYPES.VarChar, data["employeeNameAlt"]);
                                     insertRequest.addParameter('nickName', TYPES.VarChar, data["nickName"]);
-                                    insertRequest.addParameter('joinDate', TYPES.DateTime, data["endDate"] ? new Date(data["joinDate"]) : null);
-                                    insertRequest.addParameter('serviceDate', TYPES.DateTime, data["endDate"] ? new Date(data["serviceDate"]) : null);
-                                    insertRequest.addParameter('endProbationDate', TYPES.DateTime, data["endDate"] ? new Date(data["endProbationDate"]) : null);
+                                    insertRequest.addParameter('joinDate', TYPES.DateTime, data["joinDate"] ? new Date(data["joinDate"]) : null);
+                                    insertRequest.addParameter('serviceDate', TYPES.DateTime, data["serviceDate"] ? new Date(data["serviceDate"]) : null);
+                                    insertRequest.addParameter('endProbationDate', TYPES.DateTime, data["endProbationDate"] ? new Date(data["endProbationDate"]) : null);
                                     insertRequest.addParameter('endDate', TYPES.DateTime, data["endDate"] ? new Date(data["endDate"]) : null);
                                     insertRequest.addParameter('quitReason', TYPES.VarChar, data["quitReason"]);
                                     insertRequest.addParameter('companyCode', TYPES.VarChar, data["companyCode"]);
@@ -121,13 +124,13 @@ async function importDataToDB(jsonData) {
                                     insertRequest.addParameter('homePhones', TYPES.VarChar, data["homePhones"]);
                                     insertRequest.addParameter('mobilePhones', TYPES.VarChar, data["mobilePhones"]);
                                     insertRequest.addParameter('homeAddresses', TYPES.VarChar, data["homeAddresses"]);
-                                    insertRequest.addParameter('nationID', TYPES.Int, data["nationID"]);
+                                    insertRequest.addParameter('nationID', TYPES.VarChar, data["nationID"]);
                                     insertRequest.addParameter('expiredate', TYPES.DateTime, data["expiredate"] ? new Date(data["expiredate"]) : null);
 
                                     connection.execSql(insertRequest);
                                 }
                             });
-                            checkRequest.addParameter('nationID', TYPES.Int, data["nationID"]);
+                            checkRequest.addParameter('nationID', TYPES.VarChar, data["nationID"]);
 
                             connection.execSql(checkRequest);
                         });
@@ -153,7 +156,7 @@ async function importDataToDB(jsonData) {
         connection.connect();
     });
 }
-
+//Endpoint for Fetching and Saving Data
 app.get('/fetch-and-save', async (req, res) => {
     try {
         let results = []
@@ -162,8 +165,8 @@ app.get('/fetch-and-save', async (req, res) => {
         do {
 
             const url = `https://sabas.eunite.com/eunite/webservices/employees?dateV=01-04-2022&page=${page}&size=10`;
-            const username = 'sa.trial_sabas01@eunite.com';  // Replace with your API username
-            const password = 'eUniteDemo@2023';  // Replace with your API password
+            const username = 'sa.trial_sabas01@eunite.com';  // API_Name
+            const password = 'eUniteDemo@2023';  // PW
             const encodedCredentials = Buffer.from(`${username}:${password}`).toString('base64');
 
             const response = await fetch(url, {
@@ -185,11 +188,13 @@ app.get('/fetch-and-save', async (req, res) => {
             } else {
                 break;
             }
-
+            if(page == 1){
+break
+}
             page++
         } while (page != totalPage);
 
-        await importDataToDB(jsonData.data);
+       await importDataToDB(results);
         res.status(200).json({ results });
     } catch (error) {
         console.error('Error:', error.message);
@@ -200,7 +205,7 @@ app.get('/fetch-and-save', async (req, res) => {
 app.use(function (req, res, next) {
     next();
 });
-
+//Server setup and start
 const port = 3000;
 server.listen(port, () => {
     console.log("API Running on port : ", port);
